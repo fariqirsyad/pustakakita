@@ -12,7 +12,6 @@
                 <?php if (request()->getGet('kategori')) : ?>
                     <input type="hidden" name="kategori" value="<?= request()->getGet('kategori') ?>">
                 <?php endif; ?>
-                
                 <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
                 <input type="text" name="keyword" class="form-control border-start-0" 
                        placeholder="Cari buku favoritmu..." value="<?= request()->getGet('keyword') ?>">
@@ -45,7 +44,7 @@
             ?>
                 <a href="<?= $url ?>" 
                    class="btn <?= ($kat_aktif == $kat) ? 'btn-primary' : 'btn-outline-secondary' ?> rounded-pill px-4 shadow-sm">
-                   <?= $kat ?>
+                     <?= $kat ?>
                 </a>
             <?php endforeach; ?>
         </div>
@@ -58,23 +57,7 @@
         </div>
     <?php endif; ?>
 
-    <?php if ($keyword) : ?>
-        <div class="alert alert-light border-0 shadow-sm mb-4">
-            <i class="bi bi-info-circle me-2"></i> Menampilkan hasil untuk: <strong>"<?= esc($keyword) ?>"</strong>
-            <?php if ($kat_aktif) : ?> dalam kategori <strong>"<?= esc($kat_aktif) ?>"</strong><?php endif; ?>
-            <a href="<?= base_url('buku') ?>" class="text-decoration-none ms-2 small text-danger">Bersihkan Filter</a>
-        </div>
-    <?php endif; ?>
-
     <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4">
-        <?php if (empty($buku)) : ?>
-            <div class="col-12 text-center py-5">
-                <i class="bi bi-book-half display-1 text-light"></i>
-                <p class="text-muted mt-3">Ups! Buku yang Anda cari tidak ditemukan.</p>
-                <a href="<?= base_url('buku') ?>" class="btn btn-sm btn-outline-primary">Lihat Semua Buku</a>
-            </div>
-        <?php endif; ?>
-
         <?php foreach ($buku as $b) : ?>
             <div class="col">
                 <div class="card h-100 border-0 shadow-sm hover-top transition">
@@ -109,11 +92,7 @@
                         
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <div class="text-warning small">
-                                <i class="bi bi-star-fill"></i>
-                                <i class="bi bi-star-fill"></i>
-                                <i class="bi bi-star-fill"></i>
-                                <i class="bi bi-star-fill"></i>
-                                <i class="bi bi-star-half"></i>
+                                <i class="bi bi-star-fill"></i> <i class="bi bi-star-fill"></i> <i class="bi bi-star-fill"></i> <i class="bi bi-star-fill"></i> <i class="bi bi-star-half"></i>
                                 <span class="text-muted ms-1">(4.8)</span>
                             </div>
                             <span class="badge bg-light text-success border border-success border-opacity-25">Stok: <?= $b['stok']; ?></span>
@@ -125,64 +104,63 @@
                                     <a href="<?= base_url('buku/edit/' . $b['id_buku']) ?>" class="btn btn-sm btn-outline-warning flex-grow-1">
                                         <i class="bi bi-pencil-square"></i> Edit
                                     </a>
-                                    <a href="<?= base_url('buku/hapus/' . $b['id_buku']) ?>" 
-                                       class="btn btn-sm btn-outline-danger flex-grow-1"
-                                       onclick="return confirm('Yakin ingin menghapus buku ini?')">
-                                         <i class="bi bi-trash"></i> Hapus
-                                    </a>
+                                    <a href="<?= base_url('buku/hapus/' . $b['id_buku']) ?>" class="btn btn-sm btn-outline-danger flex-grow-1" onclick="return confirm('Yakin?')"><i class="bi bi-trash"></i></a>
                                 </div>
                             <?php else : ?>
                                 <?php 
                                     $db = \Config\Database::connect();
-                                    $isPending = $db->table('peminjaman')
-                                         ->where('id_buku', $b['id_buku'])
-                                         ->where('id_user', session()->get('id_user'))
-                                         ->whereIn('status', ['pending', 'dipinjam'])
-                                         ->get()->getRow();
+                                    $isPending = $db->table('peminjaman')->where('id_buku', $b['id_buku'])->where('id_user', session()->get('id_user'))->whereIn('status', ['pending', 'dipinjam'])->get()->getRow();
                                 ?>
-
                                 <?php if ($isPending) : ?>
                                     <button class="btn btn-sm btn-warning disabled">
-                                        <i class="bi bi-clock-history me-1"></i> <?= ($isPending->status == 'pending') ? 'Menunggu Konfirmasi' : 'Sedang Dipinjam'; ?>
+                                        <i class="bi bi-clock-history me-1"></i> <?= ($isPending->status == 'pending') ? 'Menunggu' : 'Dipinjam'; ?>
                                     </button>
                                 <?php elseif ($b['stok'] <= 0) : ?>
-                                    <button class="btn btn-sm btn-secondary disabled">
-                                        <i class="bi bi-x-circle me-1"></i> Stok Habis
-                                    </button>
+                                    <button class="btn btn-sm btn-secondary disabled">Stok Habis</button>
                                 <?php else : ?>
-                                    <a href="<?= base_url('buku/ajukan/' . $b['id_buku']) ?>" 
-                                       class="btn btn-sm btn-primary"
-                                       onclick="return confirm('Ajukan peminjaman buku ini?')">
-                                         <i class="bi bi-journal-plus me-1"></i> Pinjam Sekarang
-                                    </a>
+                                    <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalPinjam<?= $b['id_buku'] ?>">
+                                        <i class="bi bi-journal-plus me-1"></i> Pinjam Sekarang
+                                    </button>
                                 <?php endif; ?>
                             <?php endif; ?>
                         </div>
                     </div>
                 </div>
+
+                <?php if (session()->get('role') != 'admin' && !$isPending && $b['stok'] > 0) : ?>
+                <div class="modal fade" id="modalPinjam<?= $b['id_buku'] ?>" tabindex="-1" aria-labelledby="label<?= $b['id_buku'] ?>" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-sm">
+                        <div class="modal-content border-0 shadow">
+                            <form action="<?= base_url('buku/ajukan/' . $b['id_buku']) ?>" method="post">
+                                <div class="modal-header border-0 pb-0">
+                                    <h6 class="modal-title fw-bold" id="label<?= $b['id_buku'] ?>">Konfirmasi Pinjam</h6>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p class="small text-muted mb-3">Berapa lama ingin meminjam buku <strong>"<?= $b['judul'] ?>"</strong>?</p>
+                                    <div class="mb-2">
+                                        <label class="form-label small fw-bold">Rencana Durasi</label>
+                                        <input type="text" name="durasi_pinjam" class="form-control form-control-sm" placeholder="Contoh: 3 hari / 5 jam" required>
+                                    </div>
+                                </div>
+                                <div class="modal-footer border-0 pt-0">
+                                    <button type="button" class="btn btn-sm btn-light" data-bs-dismiss="modal">Batal</button>
+                                    <button type="submit" class="btn btn-sm btn-primary">Kirim Permohonan</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <?php endif; ?>
+
             </div>
         <?php endforeach; ?>
     </div>
 </div>
 
 <style>
-    .hover-top {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    .hover-top:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 1rem 3rem rgba(0,0,0,.1) !important;
-    }
-    .btn-primary {
-        background-color: #1a73e8;
-        border-color: #1a73e8;
-    }
-    .overflow-auto::-webkit-scrollbar {
-        display: none;
-    }
-    .overflow-auto {
-        -ms-overflow-style: none;
-        scrollbar-width: none;
-    }
+    .hover-top { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+    .hover-top:hover { transform: translateY(-8px); box-shadow: 0 1rem 3rem rgba(0,0,0,.1) !important; }
+    .btn-primary { background-color: #1a73e8; border-color: #1a73e8; }
 </style>
 <?= $this->endSection() ?>

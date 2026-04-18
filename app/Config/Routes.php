@@ -67,3 +67,4 @@ $routes->post('peminjaman/proses_kembali/(:num)', 'Peminjaman::proses_kembali/$1
 
 // Opsional: tambahkan ini juga jika belum ada untuk fitur konfirmasi
 $routes->get('peminjaman/konfirmasi/(:num)/(:any)', 'Peminjaman::konfirmasi/$1/$2');
+$routes->post('buku/ajukan/(:num)', 'Buku::ajukan/$1');

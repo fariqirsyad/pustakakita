@@ -13,8 +13,11 @@
                             <th class="ps-4">No</th>
                             <th>Nama Siswa</th>
                             <th>Judul Buku</th>
+                            <th>Durasi Rencana</th> <th>Tgl Pinjam</th> 
+                            <th>Tgl Kembali</th> 
                             <th>Status</th>
-                            <th>Denda</th> <th class="text-center">Aksi</th>
+                            <th>Denda</th>
+                            <th class="text-center">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -23,6 +26,25 @@
                                 <td class="ps-4"><?= $no++; ?></td>
                                 <td><?= $p['nama']; ?></td>
                                 <td><?= $p['judul']; ?></td>
+                                
+                                <td>
+                                    <span class="badge bg-info text-dark fw-normal">
+                                        <?= esc($p['durasi'] ?? '-'); ?>
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <?= ($p['tanggal_pinjam'] && $p['tanggal_pinjam'] != '0000-00-00 00:00:00') 
+                                        ? date('d/m/Y', strtotime($p['tanggal_pinjam'])) 
+                                        : '<span class="text-muted small">-</span>'; ?>
+                                </td>
+
+                                <td>
+                                    <?= ($p['tanggal_kembali'] && $p['tanggal_kembali'] != '0000-00-00 00:00:00') 
+                                        ? date('d/m/Y', strtotime($p['tanggal_kembali'])) 
+                                        : '<span class="text-muted small">-</span>'; ?>
+                                </td>
+
                                 <td>
                                     <?php 
                                         $st = strtolower($p['status'] ?? ''); 
@@ -32,7 +54,7 @@
                                 </td>
                                 <td>
                                     <?php if(isset($p['denda']) && $p['denda'] > 0) : ?>
-                                        <span class="text-danger fw-bold">Rp <?= number_format($p['denda'], 0, ',', '.'); ?></span>
+                                        <span class="text-danger fw-bold">Rp <?= number_format((int)$p['denda'], 0, ',', '.'); ?></span>
                                     <?php else : ?>
                                         <span class="text-muted small">-</span>
                                     <?php endif; ?>

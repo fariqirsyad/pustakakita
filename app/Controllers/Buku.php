@@ -45,31 +45,31 @@ class Buku extends BaseController
         return view('buku/index', $data);
     }
 
-    public function ajukan($id_buku)
-    {
-        // 1. Cari data buku
-        $buku = $this->bukuModel->find($id_buku);
+   public function ajukan($id_buku)
+{
+    $buku = $this->bukuModel->find($id_buku);
 
-        // 2. Cek apakah stok masih ada
-        if ($buku['stok'] > 0) {
-            // 3. Simpan data peminjaman dengan status 'pending' atau 'dipinjam'
-            $this->peminjamanModel->save([
-                'id_user'           => session()->get('id_user'),
-                'id_buku'           => $id_buku,
-                'tanggal_pengajuan' => date('Y-m-d H:i:s'),
-                'status'            => 'pending' 
-            ]);
+    if ($buku['stok'] > 0) {
+        // Ambil input durasi dari form
+        $durasiInput = $this->request->getPost('durasi_pinjam');
 
-            // 4. KURANGI STOK DI TABEL BUKU
-            $this->bukuModel->update($id_buku, [
-                'stok' => $buku['stok'] - 1
-            ]);
+        $this->peminjamanModel->save([
+            'id_user'           => session()->get('id_user'),
+            'id_buku'           => $id_buku,
+            'durasi'            => $durasiInput, // Simpan pesan durasi di sini
+            'tanggal_pengajuan' => date('Y-m-d H:i:s'),
+            'status'            => 'pending' 
+        ]);
 
-            return redirect()->to('/buku')->with('success', 'Berhasil mengajukan pinjaman');
-        } else {
-            return redirect()->back()->with('error', 'Maaf, stok buku sudah habis!');
-        }
+        $this->bukuModel->update($id_buku, [
+            'stok' => $buku['stok'] - 1
+        ]);
+
+        return redirect()->to('/buku')->with('success', 'Berhasil mengajukan pinjaman.');
+    } else {
+        return redirect()->back()->with('error', 'Maaf, stok buku sudah habis!');
     }
+}
 
     public function tambah()
     {
