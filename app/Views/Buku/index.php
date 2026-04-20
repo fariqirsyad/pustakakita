@@ -38,7 +38,7 @@
             </a>
             
             <?php 
-            $list_kategori = ['Sains', 'Matematika', 'Sejarah', 'Sastra'];
+            $list_kategori = ['Sains', 'Matematika', 'Sejarah', 'Sastra', 'Islam', 'Teknologi', 'Biologi', 'Kimia', 'Hukum'];
             foreach ($list_kategori as $kat) : 
                 $url = base_url("buku?kategori=$kat" . ($keyword ? "&keyword=$keyword" : ""));
             ?>
