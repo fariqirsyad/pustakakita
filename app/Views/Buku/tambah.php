@@ -54,6 +54,12 @@
                                     <option value="Matematika">Matematika</option>
                                     <option value="Sejarah">Sejarah</option>
                                     <option value="Sastra">Sastra</option>
+                                    <option value="Sastra">Islam</option>
+                                    <option value="Sastra">Teknologi</option>
+                                    <option value="Sastra">Biologi</option>
+                                    <option value="Sastra">Kimia</option>
+                                    <option value="Sastra">Hukum</option>
+
                                 </select>
                             </div>
                             <div class="col-md-6 mb-3">
