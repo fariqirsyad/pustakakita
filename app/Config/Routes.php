@@ -19,20 +19,20 @@ $routes->get('/logout', 'Auth::logout');
 
 // Fitur Admin System
 $routes->get('/backup', 'Backup::index', $admin);
-$routes->get('/restore', 'Restore::index', $admin);
-$routes->post('/restore/auth', 'Restore::auth', $admin);
-$routes->get('/restore/form', 'Restore::form', $admin);
-$routes->post('/restore/process', 'Restore::process', $admin);
+$routes->get('/restore', 'Restore::index');
+$routes->post('/restore/auth', 'Restore::auth');
+$routes->get('/restore/form', 'Restore::form');
+$routes->post('/restore/process', 'Restore::process');
 
 // --- Dashboard ---
 $routes->get('/', 'Dashboard::index', $authFilter);
 $routes->get('dashboard', 'Dashboard::index', $authFilter);
 
 // --- Manajemen Buku ---
-$routes->group('buku', $authFilter, function($routes) {
-    $routes->get('/', 'Buku::index'); 
-    $routes->get('detail/(:num)', 'Buku::detail/$1'); 
-    
+$routes->group('buku', $authFilter, function ($routes) {
+    $routes->get('/', 'Buku::index');
+    $routes->get('detail/(:num)', 'Buku::detail/$1');
+
     // Khusus Admin
     $routes->get('tambah', 'Buku::tambah', ['filter' => 'role:admin']);
     $routes->post('simpan', 'Buku::simpan', ['filter' => 'role:admin']);
@@ -42,11 +42,11 @@ $routes->group('buku', $authFilter, function($routes) {
 });
 
 // --- Manajemen Users (SUDAH DIGABUNG) ---
-$routes->group('users', $allRole, function($routes) {
-    $routes->get('/', 'Users::index'); 
+$routes->group('users', $allRole, function ($routes) {
+    $routes->get('/', 'Users::index');
     $routes->get('detail/(:num)', 'Users::detail/$1');
     $routes->get('wa/(:num)', 'Users::wa/$1');
-    $routes->get('edit/(:num)', 'Users::edit/$1'); 
+    $routes->get('edit/(:num)', 'Users::edit/$1');
     $routes->post('update/(:num)', 'Users::update/$1');
 
     // Khusus Admin di dalam grup Users
@@ -57,11 +57,12 @@ $routes->group('users', $allRole, function($routes) {
 });
 
 // --- Transaksi Peminjaman ---
-$routes->group('peminjaman', $authFilter, function($routes) {
+$routes->group('peminjaman', $authFilter, function ($routes) {
     $routes->get('/', 'Peminjaman::index');
     $routes->post('simpan', 'Peminjaman::simpan'); // Untuk pinjam dari katalog
     $routes->get('detail/(:num)', 'Peminjaman::detail/$1');
-    
+    $routes->get('peminjaman/konfirmasi_selesai/(:num)', 'Peminjaman::konfirmasi_selesai/$1');
+
     // Khusus Admin
     $routes->get('tambah', 'Peminjaman::tambah', ['filter' => 'role:admin']);
     $routes->get('konfirmasi/(:num)/(:any)', 'Peminjaman::konfirmasi/$1/$2', ['filter' => 'role:admin']);
@@ -69,7 +70,7 @@ $routes->group('peminjaman', $authFilter, function($routes) {
 });
 
 // --- Ulasan ---
-$routes->group('ulasan', $authFilter, function($routes) {
+$routes->group('ulasan', $authFilter, function ($routes) {
     $routes->get('tambah/(:num)', 'Ulasan::tambah/$1');
     $routes->post('simpan', 'Ulasan::simpan');
 });
@@ -79,20 +80,20 @@ $routes->get('laporan', 'Laporan::index', $admin);
 $routes->get('laporan/filter', 'Laporan::filter', $admin);
 $routes->get('pengembalian', 'Pengembalian::index', $admin);
 
-$routes->group('peminjaman', $authFilter, function($routes) {
+$routes->group('peminjaman', $authFilter, function ($routes) {
     // ... rute yang sudah ada ...
     $routes->post('user_kembali/(:num)', 'Peminjaman::user_kembali/$1'); // User lapor
     $routes->get('verifikasi_kembali/(:num)', 'Peminjaman::verifikasi_kembali/$1', ['filter' => 'role:admin']); // Admin approve
 });
 
-$routes->group('peminjaman', $authFilter, function($routes) {
+$routes->group('peminjaman', $authFilter, function ($routes) {
     $routes->get('/', 'Peminjaman::index');
     $routes->post('simpan', 'Peminjaman::simpan'); // Pinjam langsung
     $routes->post('user_kembali/(:num)', 'Peminjaman::user_kembali/$1'); // User lapor
     $routes->get('konfirmasi_selesai/(:num)', 'Peminjaman::konfirmasi_selesai/$1', ['filter' => 'role:admin']); // Admin approve
 });
 // PAKAI CARA GRUP SUPAYA LEBIH KUAT
-$routes->group('favorite', function($routes) {
+$routes->group('favorite', function ($routes) {
     $routes->get('/', 'Favorite::index');
     $routes->get('tambah/(:num)', 'Favorite::tambah/$1');
 });

@@ -6,7 +6,7 @@ use CodeIgniter\Controller;
 
 class Restore extends Controller
 {
-    private $restorePassword = 'Kojoyyy14'; // GANTI PASSWORD INI!
+    private $restorePassword = 'kojoyyy14'; // GANTI PASSWORD INI!
 
     public function index()
     {
@@ -51,6 +51,23 @@ class Restore extends Controller
         if ($ext !== 'sql') {
             return redirect()->back()->with('error', 'File harus berformat .sql');
         }
+
+        // TAMBAHAN : Otomatis membuat database jika belum ada
+        $dbName = 'pustakakita'; // Sesuaikan dengan nama database
+
+        $conn = new \mysqli('localhost', 'root', '', '');
+
+        if ($conn->connect_error) {
+            die('Koneksi gagal');
+        }
+
+        // Buat database jika belum ada
+        $conn->query("CREATE DATABASE IF NOT EXISTS $dbName");
+
+        // Pilih database
+        $conn->select_db($dbName);
+
+        // Sampai sini ----------------------------------------
 
         $db = \Config\Database::connect();
 

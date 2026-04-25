@@ -38,7 +38,7 @@ CREATE TABLE `buku` (
   `create_at` datetime NOT NULL,
   `update_at` datetime NOT NULL,
   PRIMARY KEY (`id_buku`)
-) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -47,7 +47,7 @@ CREATE TABLE `buku` (
 
 LOCK TABLES `buku` WRITE;
 /*!40000 ALTER TABLE `buku` DISABLE KEYS */;
-INSERT INTO `buku` VALUES (13,' 978-623-10-3692-6','Biografi Pahlawan Nasional: Dewi Sartika','Sejarah','Hanugrah R.M.','Silda Impika',2024,'13×19',64,15,'','1776483982_9b5ab68a9a24442fa586.jpeg','0000-00-00 00:00:00','0000-00-00 00:00:00'),(15,'978-623-02-1394-6','Pengantar Dasar Matematika','Matematika','Sri Suryanti, S.Pd., M.Si ','Dr. Irwani Zawawi, M.Kes.',2020,'14×20 cm',165,15,'','1776485414_29eb7781834e4ea9da3b.jpg','0000-00-00 00:00:00','0000-00-00 00:00:00'),(16,'978–602–03–1258–3','Cantik Itu Luka','Sastra','Eka Kurniawan','Gramedia Pustaka Utama',2015,'14×20 cm',150,12,'','1776485509_d0432481a7d2abbcd094.jpg','0000-00-00 00:00:00','0000-00-00 00:00:00'),(17,'978-602-475-022-0','Aljabar Linear Elementer','Matematika','Gandung Sugita','Anggraini',2018,'15.5×23 cm',285,16,'','1776485626_b1221efed3bf225ee4ef.jpg','0000-00-00 00:00:00','0000-00-00 00:00:00'),(18,'978-623-7022-30-5','Geometri Elektrik','Matematika','Mahsup ','Abdillah books',2018,'14×20 cm',62,18,'','1776485695_64048b8435f8da8f2ce3.jpg','0000-00-00 00:00:00','0000-00-00 00:00:00'),(19,'978-602-51195-0-7','History Of The World War, Sejarah Perang Dunia','Sejarah','Saut Pasaribu','Alexander Books',2020,' 14×21 cm',146,15,'','1776486540_73b1b6482e99f3cbaff7.jpg','0000-00-00 00:00:00','0000-00-00 00:00:00'),(22,' 978-623-10-3963-7','Biografi Pahlawan Nasional: H.O.S. Tjokroaminoto','Sejarah','Hanugrah R.M.','Silda Impika',2024,'13×19',64,14,'','1776529800_193979a5ef3116b80b65.png','0000-00-00 00:00:00','0000-00-00 00:00:00'),(25,'978-623-89917-1-6','Ensiklopedia Mini Bilingual','Sains','Dionisius Hargen','Silda Impika',2025,'14X20',104,14,'','1776665525_fde4f143fd51bf53328b.png','0000-00-00 00:00:00','0000-00-00 00:00:00'),(26,'978-0804781473','Reconstruction of Religious Thought in Islam','Islam','Muhammad Iqbal','Stanford University Press',2013,'14x20',256,10,'','1777052246_a859aefa087ddd3b3ab8.jpg','0000-00-00 00:00:00','0000-00-00 00:00:00'),(27,'978-1101970317','Life 3.0','Teknologi','Max Tegmark','Vintage',2018,'14x20',384,10,'','1777052435_c763bc8d6e83a6e2b073.jpg','0000-00-00 00:00:00','0000-00-00 00:00:00'),(28,'978-1476733500','The Gene','Biologi','Siddhartha Mukherjee','Scribner',2017,'14x20',608,10,'','1777052643_09449f14e13e30018381.jpg','0000-00-00 00:00:00','0000-00-00 00:00:00'),(29,'978-0316051637','The Disappearing Spoon','Kimia','Sam Kean','Back Bay Books',2011,'13.7 x 21.0',416,15,'','1777052788_66ebbc81fa44ae3cc7f4.jpg','0000-00-00 00:00:00','0000-00-00 00:00:00'),(30,'978-0141034539','The Rule of Law','Hukum','Tom Bingham','Penguin Books',2011,'14x20',224,12,'','1777052927_d8ec6e2cf95a64e92ce1.jpg','0000-00-00 00:00:00','0000-00-00 00:00:00');
+INSERT INTO `buku` VALUES (13,' 978-623-10-3692-6','Biografi Pahlawan Nasional: Dewi Sartika','Sejarah','Hanugrah R.M.','Silda Impika',2024,'13×19',64,13,'','1776483982_9b5ab68a9a24442fa586.jpeg','0000-00-00 00:00:00','0000-00-00 00:00:00'),(15,'978-623-02-1394-6','Pengantar Dasar Matematika','Matematika','Sri Suryanti, S.Pd., M.Si ','Dr. Irwani Zawawi, M.Kes.',2020,'14×20 cm',165,14,'','1776485414_29eb7781834e4ea9da3b.jpg','0000-00-00 00:00:00','0000-00-00 00:00:00'),(16,'978–602–03–1258–3','Cantik Itu Luka','Sastra','Eka Kurniawan','Gramedia Pustaka Utama',2015,'14×20 cm',150,12,'','1776485509_d0432481a7d2abbcd094.jpg','0000-00-00 00:00:00','0000-00-00 00:00:00'),(17,'978-602-475-022-0','Aljabar Linear Elementer','Matematika','Gandung Sugita','Anggraini',2018,'15.5×23 cm',285,19,'','1776485626_b1221efed3bf225ee4ef.jpg','0000-00-00 00:00:00','0000-00-00 00:00:00'),(18,'978-623-7022-30-5','Geometri Elektrik','Matematika','Mahsup ','Abdillah books',2018,'14×20 cm',62,20,'','1776485695_64048b8435f8da8f2ce3.jpg','0000-00-00 00:00:00','0000-00-00 00:00:00'),(19,'978-602-51195-0-7','History Of The World War, Sejarah Perang Dunia','Sejarah','Saut Pasaribu','Alexander Books',2020,' 14×21 cm',146,15,'','1776486540_73b1b6482e99f3cbaff7.jpg','0000-00-00 00:00:00','0000-00-00 00:00:00'),(22,' 978-623-10-3963-7','Biografi Pahlawan Nasional: H.O.S. Tjokroaminoto','Sejarah','Hanugrah R.M.','Silda Impika',2024,'13×19',64,15,'','1776529800_193979a5ef3116b80b65.png','0000-00-00 00:00:00','0000-00-00 00:00:00'),(25,'978-623-89917-1-6','Ensiklopedia Mini Bilingual','Sains','Dionisius Hargen','Silda Impika',2025,'14X20',104,15,'','1776665525_fde4f143fd51bf53328b.png','0000-00-00 00:00:00','0000-00-00 00:00:00');
 /*!40000 ALTER TABLE `buku` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -90,13 +90,13 @@ CREATE TABLE `peminjaman` (
   `durasi` varchar(100) NOT NULL,
   `id_user` int(11) NOT NULL,
   `denda` int(11) NOT NULL,
-  `status` enum('dipinjam','dikembalikan','ditolak','proses_kembali') NOT NULL,
+  `status` enum('dipinjam','dikembalikan','ditolak','pending') NOT NULL,
   `tanggal_pinjam` datetime NOT NULL,
   `tanggal_kembali` datetime NOT NULL,
   `bukti_bayar` varchar(255) DEFAULT NULL,
   `metode_bayar` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id_pinjam`)
-) ENGINE=InnoDB AUTO_INCREMENT=81 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=71 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -105,7 +105,7 @@ CREATE TABLE `peminjaman` (
 
 LOCK TABLES `peminjaman` WRITE;
 /*!40000 ALTER TABLE `peminjaman` DISABLE KEYS */;
-INSERT INTO `peminjaman` VALUES (77,22,'1',4,30000,'','2026-04-20 16:46:50','0000-00-00 00:00:00','1777049243_fd23d331cf30add2483f.jpg','E-Wallet'),(78,17,'1',4,0,'dikembalikan','2026-04-20 16:54:33','2026-04-24 16:55:38','1777049718_df597b897ee3b3f160ac.jpg','E-Wallet'),(79,17,'1',4,40000,'dikembalikan','2026-04-19 16:56:02','2026-04-24 16:57:09','1777049805_bc448e3b32f49c2f9940.jpg','E-Wallet'),(80,18,'1',4,0,'dipinjam','2026-04-24 17:16:15','0000-00-00 00:00:00',NULL,NULL);
+INSERT INTO `peminjaman` VALUES (69,15,'1',4,0,'','2026-04-21 16:15:48','2026-04-21 16:28:37',NULL,NULL),(70,15,'1',4,0,'dipinjam','2026-04-21 16:35:10','0000-00-00 00:00:00',NULL,NULL);
 /*!40000 ALTER TABLE `peminjaman` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -184,4 +184,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-04-25  0:49:23
+-- Dump completed on 2026-04-24  0:32:02

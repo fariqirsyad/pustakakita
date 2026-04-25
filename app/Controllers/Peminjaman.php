@@ -5,7 +5,6 @@ namespace App\Controllers;
 use App\Models\PeminjamanModel;
 use App\Models\BukuModel;
 use App\Models\UsersModel;
-use DateTime;
 
 class Peminjaman extends BaseController
 {
@@ -22,46 +21,42 @@ class Peminjaman extends BaseController
 
     public function index()
     {
-        $db = \Config\Database::connect();
         $role = session()->get('role');
         $id_user = session()->get('id_user');
-        
-        $builder = $db->table('peminjaman');
-        $builder->select('peminjaman.*, buku.judul, users.nama');
-        $builder->join('buku', 'buku.id_buku = peminjaman.id_buku');
-        $builder->join('users', 'users.id_user = peminjaman.id_user');
-        
-        // Filter: Jika bukan admin, hanya tampilkan pinjaman milik sendiri
+
+        // Memperbaiki JOIN agar mengarah ke tabel 'users' sesuai database kamu
+        $builder = $this->peminjamanModel
+            ->select('peminjaman.*, users.nama, buku.judul')
+            ->join('users', 'users.id_user = peminjaman.id_user')
+            ->join('buku', 'buku.id_buku = peminjaman.id_buku');
+
+        // Filter jika yang login bukan admin
         if ($role != 'admin') {
             $builder->where('peminjaman.id_user', $id_user);
         }
 
-        $builder->orderBy('peminjaman.id_pinjam', 'DESC');
-        
         $data = [
             'title'      => 'Daftar Transaksi Peminjaman',
-            'peminjaman' => $builder->get()->getResultArray()
+            'peminjaman' => $builder->orderBy('peminjaman.id_pinjam', 'DESC')->findAll()
         ];
 
         return view('peminjaman/index', $data);
     }
 
-    // Alur Pinjam Langsung oleh User
     public function simpan()
     {
         $id_buku = $this->request->getPost('id_buku');
         $buku = $this->bukuModel->find($id_buku);
 
-        if ($buku['stok'] > 0) {
+        if ($buku && $buku['stok'] > 0) {
             $this->peminjamanModel->save([
                 'id_user'        => session()->get('id_user'),
                 'id_buku'        => $id_buku,
                 'tanggal_pinjam' => date('Y-m-d H:i:s'),
                 'durasi'         => $this->request->getPost('durasi_pinjam'),
-                'status'         => 'dipinjam' // Langsung aktif tanpa konfirmasi
+                'status'         => 'dipinjam'
             ]);
 
-            // Kurangi stok buku secara otomatis
             $this->bukuModel->update($id_buku, ['stok' => $buku['stok'] - 1]);
 
             return redirect()->to('/peminjaman')->with('success', 'Buku berhasil dipinjam!');
@@ -69,81 +64,55 @@ class Peminjaman extends BaseController
         return redirect()->back()->with('error', 'Maaf, stok buku sedang habis!');
     }
 
-    // Fungsi User Melaporkan Pengembalian & Upload Bukti Transfer
-   public function user_kembali($id)
+    // USER: Lapor kembali & upload bukti (image_884b9b.png)
+    // --- USER MENGIRIM BUKTI ---
+public function user_kembali($id) 
 {
-    $dataPinjam = $this->peminjamanModel->find($id);
-    
-    // Logika Hitung Denda Otomatis
-    $deadline = date('Y-m-d', strtotime($dataPinjam['tanggal_pinjam']. ' + ' . $dataPinjam['durasi'] . ' days'));
-    $hari_ini = date('Y-m-d');
-    $total_denda = 0;
+    $file = $this->request->getFile('bukti_bayar');
+    $denda = $this->request->getPost('denda');
+    $newName = null;
 
-    if ($hari_ini > $deadline) {
-        $tgl_deadline = new DateTime($deadline);
-        $tgl_sekarang = new DateTime($hari_ini);
-        $selisih = $tgl_sekarang->diff($tgl_deadline);
-        $total_denda = $selisih->days * 10000; // 10rb per hari
-    }
-
-    $fileBukti = $this->request->getFile('bukti_bayar');
-    $namaFile = null;
-
-    if ($fileBukti && $fileBukti->isValid() && !$fileBukti->hasMoved()) {
-        $namaFile = $fileBukti->getRandomName();
-        $fileBukti->move('img/bukti_bayar/', $namaFile);
+    if ($file && $file->isValid() && !$file->hasMoved()) {
+        $newName = $file->getRandomName();
+        $file->move('img/bukti_bayar', $newName);
     }
 
     $this->peminjamanModel->update($id, [
-        'status'          => 'proses_kembali',
-        'denda'           => $total_denda, // Denda otomatis masuk sini
-        'metode_bayar'    => $this->request->getPost('metode_bayar'),
-        'bukti_bayar'     => $namaFile,
-        'tanggal_kembali' => date('Y-m-d H:i:s')
+        'status'        => 'proses_kembali',
+        'bukti_bayar'   => $newName,
+        'metode_bayar'  => $this->request->getPost('metode_bayar'),
+        'denda'         => $denda,
+        // JANGAN isi tanggal_kembali di sini agar di tabel tetap muncul "Belum Kembali"
     ]);
 
-    return redirect()->to('/peminjaman')->with('success', 'Laporan berhasil dikirim!');
+    return redirect()->back()->with('success', 'Bukti berhasil diunggah. Menunggu verifikasi admin.');
 }
-    // Fungsi Admin untuk Verifikasi Foto & Terima Buku
+
+    // ADMIN: Tombol Konfirmasi Selesai
     public function konfirmasi_selesai($id)
-    {
-        if (session()->get('role') != 'admin') {
-            return redirect()->back()->with('error', 'Akses ditolak!');
-        }
-
-        $dataPinjam = $this->peminjamanModel->find($id);
-        
-        // Tambahkan kembali stok buku
-        $buku = $this->bukuModel->find($dataPinjam['id_buku']);
-        $this->bukuModel->update($dataPinjam['id_buku'], [
-            'stok' => $buku['stok'] + 1
-        ]);
-
-        // Update status menjadi dikembalikan (Selesai)
-        $this->peminjamanModel->update($id, [
-        'status' => 'dikembalikan',
-        'tanggal_kembali' => date('Y-m-d H:i:s') // Pastikan baris ini ada
-    ]);
-
-        return redirect()->to('/peminjaman')->with('success', 'Buku telah diterima dan stok telah diperbarui.');
-    }
-
-    // Opsional: Masih saya sisakan jika kamu butuh fitur permohonan/konfirmasi manual di masa depan
-    public function konfirmasi($id, $aksi)
     {
         if (session()->get('role') != 'admin') return redirect()->back();
 
-        if ($aksi == 'setuju') {
+        $peminjaman = $this->peminjamanModel->find($id);
+
+        if ($peminjaman) {
+            // 1. Set status selesai
             $this->peminjamanModel->update($id, [
-                'status' => 'dipinjam',
-                'tanggal_pinjam' => date('Y-m-d H:i:s'),
+                'status'          => 'dikembalikan',
+                'tanggal_kembali' => date('Y-m-d H:i:s')
             ]);
-            $pesan = 'Peminjaman disetujui.';
-        } else {
-            $this->peminjamanModel->update($id, ['status' => 'ditolak']);
-            $pesan = 'Pengajuan ditolak.';
+
+            // 2. Kembalikan stok buku
+            $buku = $this->bukuModel->find($peminjaman['id_buku']);
+            if ($buku) {
+                $this->bukuModel->update($peminjaman['id_buku'], [
+                    'stok' => $buku['stok'] + 1
+                ]);
+            }
+
+            return redirect()->back()->with('success', 'Data peminjaman berhasil diselesaikan.');
         }
 
-        return redirect()->to('/peminjaman')->with('success', $pesan);
+        return redirect()->back()->with('error', 'Data tidak ditemukan.');
     }
 }
